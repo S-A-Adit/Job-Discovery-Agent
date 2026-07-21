@@ -1,0 +1,135 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./job-agent.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+model Company {
+  id                  String          @id @default(uuid())
+  name                String          @unique
+  careerPageUrl       String
+  sourceType          String          // "ATS", "Career Site", "Custom Portal"
+  atsProvider         String?         // "Greenhouse", "Lever", "Ashby", "Workday", etc.
+  crawlFrequency      String          // "15m", "1h", "6h", "24h"
+  lastSuccessfulCrawl DateTime?
+  apiEndpoint         String?
+  sourceFingerprint   String?         // Custom identifier or adapter config details
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  jobs                Job[]
+  crawlLogs           CrawlLog[]
+  
+  // Expanded metadata fields
+  website             String?
+  industry            String?
+  country             String?
+  github              String?
+  linkedin            String?
+  crunchbase          String?
+  lastChecked         DateTime?
+  status              String          @default("ACTIVE") // "ACTIVE", "INACTIVE", "REDIRECT"
+  priorityScore       Int             @default(20)
+}
+
+model CareerPage {
+  id            String   @id @default(uuid())
+  companyId     String
+  careerUrl     String
+  confidence    Float    @default(1.0)
+  foundBy       String   // "pattern", "search", "sitemap", "robots", "footer"
+  date          DateTime @default(now())
+}
+
+model Job {
+  id              String      @id @default(uuid())
+  companyId       String
+  company         Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyName     String      // Denormalized company name for easier query
+  jobId           String      // Original job ID from source
+  title           String
+  location        String
+  employmentType  String?
+  postedTimestamp DateTime?   // Raw vendor timestamp
+  description     String?
+  url             String
+  source          String      // e.g. "Greenhouse", "Lever", etc.
+  hash            String      @unique // Unique hash for deduplication: sha256(companyName + title + location + jobId)
+  
+  // Observation history (Timestamp Resolution Engine)
+  firstSeen       DateTime    @default(now())
+  lastSeen        DateTime    @default(now())
+  status          String      @default("ACTIVE") // "ACTIVE", "INACTIVE"
+  
+  // Embedding for semantic search
+  embedding       String?     // JSON string of float array (e.g. 1536/768 dims)
+  
+  // New normalized fields
+  remote          Boolean     @default(false)
+  salary          String?
+  department      String?
+  skills          String?     // Comma-separated or JSON list of skills
+  experience      String?     // E.g., Junior, Senior, Mid, etc.
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  jobSkills       JobSkill[]
+}
+
+model Skill {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  jobSkills JobSkill[]
+}
+
+model JobSkill {
+  jobId   String
+  skillId String
+  job     Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  skill   Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([jobId, skillId])
+}
+
+model CrawlLog {
+  id           String   @id @default(uuid())
+  companyId    String
+  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  status       String   // "SUCCESS", "FAILURE"
+  jobsFound    Int
+  jobsNew      Int
+  errorMessage String?
+  durationMs   Int
+  createdAt    DateTime @default(now())
+}
+
+model CrawlQueue {
+  id        String   @id @default(uuid())
+  companyId String
+  status    String   // "PENDING", "PROCESSING", "COMPLETED", "FAILED"
+  attempts  Int      @default(0)
+  runAfter  DateTime @default(now())
+  createdAt DateTime @default(now())
+}
+
+model CompanySource {
+  id         String   @id @default(uuid())
+  companyId  String
+  sourceName String   // "Fortune 500", "NASDAQ-100", "S&P500", "YC", "GitHub Gist", etc.
+}
+
+model CompanyAlias {
+  id         String   @id @default(uuid())
+  companyId  String
+  aliasName  String   @unique
+}
+
+model Settings {
+  id        String   @id @default("singleton")
+  dataJson  String   // JSON storing config: API keys, filters, resume text, resume embedding
+  updatedAt DateTime @updatedAt
+}
+
