@@ -17,11 +17,18 @@ async function discoverAll() {
     }
   });
 
-  const targetCompanies = companies.filter(
-    c => !c.careerPageUrl || c.careerPageUrl === '' || c.careerPageUrl === `${c.website || ''}/careers`
-  );
+  // Parse limit from command line args if provided, default to 5 to avoid overdoing it
+  const args = process.argv.slice(2);
+  const limitArg = args.find(a => a.startsWith('--limit='));
+  const LIMIT = limitArg ? parseInt(limitArg.split('=')[1], 10) : 5;
 
-  console.log(`[Discovery] Found ${targetCompanies.length} companies that need career page discovery.`);
+  const allTargetCompanies = companies.filter(
+    c => (!c.careerPageUrl || c.careerPageUrl === '' || c.careerPageUrl === `${c.website || ''}/careers`) && !c.lastChecked
+  );
+  
+  const targetCompanies = allTargetCompanies.slice(0, LIMIT);
+
+  console.log(`[Discovery] Found ${allTargetCompanies.length} companies that need career page discovery. Processing ${targetCompanies.length} (Limit: ${LIMIT}).`);
 
   for (const company of targetCompanies) {
     try {
