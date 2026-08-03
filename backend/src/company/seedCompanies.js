@@ -273,45 +273,74 @@ async function main() {
     return;
   }
 
-  let upserted = 0;
+  let added = 0;
+  let updated = 0;
+  const newlyCreatedCompanyIds = [];
+
   for (const company of unique) {
     const careerPageUrl = company.careerPageUrl || `${company.website || ''}/careers`;
     try {
-      await prisma.company.upsert({
-        where: { name: company.name },
-        update: {
-          industry: company.industry,
-          country: company.country,
-          priorityScore: company.priority,
-          website: company.website || undefined,
-          atsProvider: company.atsProvider || undefined,
-          sourceFingerprint: company.sourceFingerprint || undefined,
-          apiEndpoint: company.apiEndpoint || undefined,
-          sourceType: company.sourceType || undefined,
-          careerPageUrl: company.careerPageUrl || undefined
-        },
-        create: {
-          name: company.name,
-          website: company.website || '',
-          industry: company.industry,
-          country: company.country,
-          priorityScore: company.priority,
-          careerPageUrl,
-          sourceType: company.sourceType || 'Career Site',
-          crawlFrequency: company.priority >= 80 ? '6h' : '24h',
-          atsProvider: company.atsProvider || null,
-          sourceFingerprint: company.sourceFingerprint || null,
-          apiEndpoint: company.apiEndpoint || null,
-          status: 'ACTIVE'
-        }
-      });
-      upserted++;
+      const existing = await prisma.company.findUnique({ where: { name: company.name } });
+      
+      if (existing) {
+        await prisma.company.update({
+          where: { id: existing.id },
+          data: {
+            industry: company.industry,
+            country: company.country,
+            priorityScore: company.priority,
+            website: company.website || undefined,
+            atsProvider: company.atsProvider || undefined,
+            sourceFingerprint: company.sourceFingerprint || undefined,
+            apiEndpoint: company.apiEndpoint || undefined,
+            sourceType: company.sourceType || undefined,
+            careerPageUrl: company.careerPageUrl || undefined
+          }
+        });
+        updated++;
+      } else {
+        const created = await prisma.company.create({
+          data: {
+            name: company.name,
+            website: company.website || '',
+            industry: company.industry,
+            country: company.country,
+            priorityScore: company.priority,
+            careerPageUrl,
+            sourceType: company.sourceType || 'Career Site',
+            crawlFrequency: company.priority >= 80 ? '6h' : '24h',
+            atsProvider: company.atsProvider || null,
+            sourceFingerprint: company.sourceFingerprint || null,
+            apiEndpoint: company.apiEndpoint || null,
+            status: 'ACTIVE'
+          }
+        });
+        newlyCreatedCompanyIds.push(created.id);
+        added++;
+      }
     } catch (err) {
-      console.warn(`[Seed] Failed to upsert ${company.name}: ${err.message}`);
+      console.warn(`[Seed] Failed to process ${company.name}: ${err.message}`);
     }
   }
 
-  console.log(`\n[Seed] Done. ${upserted} companies upserted into database.`);
+  console.log(`\n[Seed] Done. ${added} companies added, ${updated} updated in database.`);
+
+  if (newlyCreatedCompanyIds.length > 0) {
+    console.log(`\n[Seed] Initiating immediate crawl for ${newlyCreatedCompanyIds.length} newly added companies...`);
+    const { processCrawlForCompany } = require('../scraper/scraper');
+    let crawlSuccess = 0;
+    for (const companyId of newlyCreatedCompanyIds) {
+      try {
+        const result = await processCrawlForCompany(companyId);
+        if (result && result.success) {
+          crawlSuccess++;
+        }
+      } catch (e) {
+        console.error(`[Seed] Crawl failed for company ID ${companyId}:`, e.message);
+      }
+    }
+    console.log(`[Seed] Finished crawling ${crawlSuccess}/${newlyCreatedCompanyIds.length} new companies successfully.`);
+  }
 }
 
 main().catch(console.error).finally(() => prisma.$disconnect());

@@ -184,6 +184,7 @@ async function processBatch(items, probeFn, label) {
 async function upsertCompanies(companies) {
   let added = 0;
   let updated = 0;
+  const newlyCreatedCompanyIds = [];
 
   for (const company of companies) {
     try {
@@ -204,7 +205,7 @@ async function upsertCompanies(companies) {
           updated++;
         }
       } else {
-        await prisma.company.create({
+        const created = await prisma.company.create({
           data: {
             name: company.name,
             website: '',
@@ -218,12 +219,13 @@ async function upsertCompanies(companies) {
             status: 'ACTIVE'
           }
         });
+        newlyCreatedCompanyIds.push(created.id);
         added++;
       }
     } catch (_) {}
   }
 
-  return { added, updated };
+  return { added, updated, newlyCreatedCompanyIds };
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
@@ -310,7 +312,7 @@ async function main() {
   });
 
   console.log(`\n[Registry] Upserting ${unique.length} verified companies...`);
-  const { added, updated } = await upsertCompanies(unique);
+  const { added, updated, newlyCreatedCompanyIds } = await upsertCompanies(unique);
 
   const finalTotal = await prisma.company.count();
   console.log(`\n=== ATS Discovery Complete ===`);
@@ -319,6 +321,23 @@ async function main() {
   console.log(`  Master Registry Total:                    ${finalTotal}`);
   console.log(`  Tavily credits used this session:         ${getSessionCredits()}`);
   console.log('==============================\n');
+
+  if (newlyCreatedCompanyIds && newlyCreatedCompanyIds.length > 0) {
+    console.log(`\n[Discovery] Initiating immediate crawl for ${newlyCreatedCompanyIds.length} newly added companies...`);
+    const { processCrawlForCompany } = require('../scraper/scraper');
+    let crawlSuccess = 0;
+    for (const companyId of newlyCreatedCompanyIds) {
+      try {
+        const result = await processCrawlForCompany(companyId);
+        if (result && result.success) {
+          crawlSuccess++;
+        }
+      } catch (e) {
+        console.error(`[Discovery] Crawl failed for company ID ${companyId}:`, e.message);
+      }
+    }
+    console.log(`[Discovery] Finished crawling ${crawlSuccess}/${newlyCreatedCompanyIds.length} new companies successfully.`);
+  }
 }
 
 main()
