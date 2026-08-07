@@ -1,4 +1,5 @@
 const { fetchJson } = require('./helpers');
+const { fetchFallback } = require('./fallback');
 
 async function fetchWorkday(companySlug, apiEndpoint) {
   if (!apiEndpoint) throw new Error('Workday requires an explicit apiEndpoint');
@@ -12,10 +13,17 @@ async function fetchWorkday(companySlug, apiEndpoint) {
   let totalFetched = 0;
 
   for (let page = 0; page < MAX_PAGES; page++) {
-    const data = await fetchJson(apiEndpoint, {
-      method: 'POST',
-      body: JSON.stringify({ appliedFacets: {}, limit: PAGE_SIZE, offset, searchText: '' })
-    });
+    let data;
+    try {
+      data = await fetchJson(apiEndpoint, {
+        method: 'POST',
+        body: JSON.stringify({ appliedFacets: {}, limit: PAGE_SIZE, offset, searchText: '' })
+      });
+    } catch (err) {
+      console.warn(`[Workday] API failed: ${err.message}. WAF block likely. Using Puppeteer fallback.`);
+      const origin = new URL(apiEndpoint).origin;
+      return fetchFallback(origin); // Fallback to scraping the site directly
+    }
 
     if (!data || !Array.isArray(data.jobPostings)) {
       if (page === 0) throw new Error('Invalid Workday response structure');

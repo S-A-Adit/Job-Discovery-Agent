@@ -68,11 +68,12 @@ model Job {
   embedding String? // JSON string of float array (e.g. 1536/768 dims)
 
   // New normalized fields
-  remote     Boolean @default(false)
-  salary     String?
-  department String?
-  skills     String? // Comma-separated or JSON list of skills
-  experience String? // E.g., Junior, Senior, Mid, etc.
+  remote       Boolean @default(false)
+  salary       String?
+  department   String?
+  skills       String? // Comma-separated or JSON list of skills
+  experience   String? // E.g., Junior, Senior, Mid, etc.
+  llmProcessed Boolean @default(false)
 
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt

@@ -173,6 +173,7 @@ exports.Prisma.JobScalarFieldEnum = {
   department: 'department',
   skills: 'skills',
   experience: 'experience',
+  llmProcessed: 'llmProcessed',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

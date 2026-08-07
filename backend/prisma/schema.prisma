@@ -73,6 +73,7 @@ model Job {
   department      String?
   skills          String?     // Comma-separated or JSON list of skills
   experience      String?     // E.g., Junior, Senior, Mid, etc.
+  llmProcessed    Boolean     @default(false)
   
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt

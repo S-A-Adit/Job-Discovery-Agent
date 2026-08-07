@@ -65,19 +65,35 @@ Extract hiring companies directly by probing public job board endpoints from Lev
 node src/company/atsDiscovery.js
 ```
 
-### 4. Career Page Finder & ATS Detection
+### 4. Bulk CSV Import
+Import a massive dataset (e.g., from Kaggle) and dynamically scrape the first N new companies safely:
+```bash
+node src/company/importCsv.js /path/to/dataset.csv 50
+```
+
+### 5. Manual Bite-Sized Batch Scraping
+Manually churn through unscraped companies in bite-sized chunks so you can safely shut down your IDE when finished. It prioritizes new/unscraped companies and remembers where you left off.
+```bash
+# Morning (30 mins free): Churns through 100 new companies and exits
+node src/company/scrapeBatch.js 100
+
+# Evening (2 hours free): Churns through 400 different companies
+node src/company/scrapeBatch.js 400
+```
+
+### 6. Career Page Finder & ATS Detection
 Verify placeholders and discover career pages using the 4-phase finder (checking path patterns, robots.txt, homepage crawls, and Tavily fallbacks):
 ```bash
 node scratch/run_discovery.js
 ```
 
-### 5. Link Re-Verification (Url Alive Checks)
+### 7. Link Re-Verification (Url Alive Checks)
 Run weekly verification checks on existing career URLs and re-discover pages if links return 4xx/5xx responses:
 ```bash
 node src/company/enrichCompanies.js
 ```
 
-### 6. Manual Crawler Test
+### 8. Manual Crawler Test
 Test crawl jobs for specific companies directly from the terminal:
 ```bash
 node src/test-crawler.js Cloudflare

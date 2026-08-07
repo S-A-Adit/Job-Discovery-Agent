@@ -1,5 +1,7 @@
 /** Shared HTTP helper for ATS adapters */
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
 
 async function fetchJson(url, options = {}) {
   const response = await fetch(url, {

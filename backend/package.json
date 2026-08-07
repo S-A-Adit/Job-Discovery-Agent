@@ -18,6 +18,8 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "puppeteer": "^25.3.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "tavily": "^2.0.0"
   },
   "devDependencies": {

@@ -3856,6 +3856,7 @@ export namespace Prisma {
     department: string | null
     skills: string | null
     experience: string | null
+    llmProcessed: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -3882,6 +3883,7 @@ export namespace Prisma {
     department: string | null
     skills: string | null
     experience: string | null
+    llmProcessed: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -3908,6 +3910,7 @@ export namespace Prisma {
     department: number
     skills: number
     experience: number
+    llmProcessed: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -3936,6 +3939,7 @@ export namespace Prisma {
     department?: true
     skills?: true
     experience?: true
+    llmProcessed?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3962,6 +3966,7 @@ export namespace Prisma {
     department?: true
     skills?: true
     experience?: true
+    llmProcessed?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3988,6 +3993,7 @@ export namespace Prisma {
     department?: true
     skills?: true
     experience?: true
+    llmProcessed?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -4087,6 +4093,7 @@ export namespace Prisma {
     department: string | null
     skills: string | null
     experience: string | null
+    llmProcessed: boolean
     createdAt: Date
     updatedAt: Date
     _count: JobCountAggregateOutputType | null
@@ -4130,6 +4137,7 @@ export namespace Prisma {
     department?: boolean
     skills?: boolean
     experience?: boolean
+    llmProcessed?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     company?: boolean | CompanyDefaultArgs<ExtArgs>
@@ -4159,6 +4167,7 @@ export namespace Prisma {
     department?: boolean
     skills?: boolean
     experience?: boolean
+    llmProcessed?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     company?: boolean | CompanyDefaultArgs<ExtArgs>
@@ -4186,6 +4195,7 @@ export namespace Prisma {
     department?: boolean
     skills?: boolean
     experience?: boolean
+    llmProcessed?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -4227,6 +4237,7 @@ export namespace Prisma {
       department: string | null
       skills: string | null
       experience: string | null
+      llmProcessed: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["job"]>
@@ -4645,6 +4656,7 @@ export namespace Prisma {
     readonly department: FieldRef<"Job", 'String'>
     readonly skills: FieldRef<"Job", 'String'>
     readonly experience: FieldRef<"Job", 'String'>
+    readonly llmProcessed: FieldRef<"Job", 'Boolean'>
     readonly createdAt: FieldRef<"Job", 'DateTime'>
     readonly updatedAt: FieldRef<"Job", 'DateTime'>
   }
@@ -11366,6 +11378,7 @@ export namespace Prisma {
     department: 'department',
     skills: 'skills',
     experience: 'experience',
+    llmProcessed: 'llmProcessed',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -11720,6 +11733,7 @@ export namespace Prisma {
     department?: StringNullableFilter<"Job"> | string | null
     skills?: StringNullableFilter<"Job"> | string | null
     experience?: StringNullableFilter<"Job"> | string | null
+    llmProcessed?: BoolFilter<"Job"> | boolean
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     company?: XOR<CompanyRelationFilter, CompanyWhereInput>
@@ -11748,6 +11762,7 @@ export namespace Prisma {
     department?: SortOrderInput | SortOrder
     skills?: SortOrderInput | SortOrder
     experience?: SortOrderInput | SortOrder
+    llmProcessed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     company?: CompanyOrderByWithRelationInput
@@ -11779,6 +11794,7 @@ export namespace Prisma {
     department?: StringNullableFilter<"Job"> | string | null
     skills?: StringNullableFilter<"Job"> | string | null
     experience?: StringNullableFilter<"Job"> | string | null
+    llmProcessed?: BoolFilter<"Job"> | boolean
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     company?: XOR<CompanyRelationFilter, CompanyWhereInput>
@@ -11807,6 +11823,7 @@ export namespace Prisma {
     department?: SortOrderInput | SortOrder
     skills?: SortOrderInput | SortOrder
     experience?: SortOrderInput | SortOrder
+    llmProcessed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: JobCountOrderByAggregateInput
@@ -11839,6 +11856,7 @@ export namespace Prisma {
     department?: StringNullableWithAggregatesFilter<"Job"> | string | null
     skills?: StringNullableWithAggregatesFilter<"Job"> | string | null
     experience?: StringNullableWithAggregatesFilter<"Job"> | string | null
+    llmProcessed?: BoolWithAggregatesFilter<"Job"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
   }
@@ -12437,6 +12455,7 @@ export namespace Prisma {
     department?: string | null
     skills?: string | null
     experience?: string | null
+    llmProcessed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     company: CompanyCreateNestedOneWithoutJobsInput
@@ -12465,6 +12484,7 @@ export namespace Prisma {
     department?: string | null
     skills?: string | null
     experience?: string | null
+    llmProcessed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     jobSkills?: JobSkillUncheckedCreateNestedManyWithoutJobInput
@@ -12491,6 +12511,7 @@ export namespace Prisma {
     department?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: NullableStringFieldUpdateOperationsInput | string | null
     experience?: NullableStringFieldUpdateOperationsInput | string | null
+    llmProcessed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     company?: CompanyUpdateOneRequiredWithoutJobsNestedInput
@@ -12519,6 +12540,7 @@ export namespace Prisma {
     department?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: NullableStringFieldUpdateOperationsInput | string | null
     experience?: NullableStringFieldUpdateOperationsInput | string | null
+    llmProcessed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobSkills?: JobSkillUncheckedUpdateManyWithoutJobNestedInput
@@ -12546,6 +12568,7 @@ export namespace Prisma {
     department?: string | null
     skills?: string | null
     experience?: string | null
+    llmProcessed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12571,6 +12594,7 @@ export namespace Prisma {
     department?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: NullableStringFieldUpdateOperationsInput | string | null
     experience?: NullableStringFieldUpdateOperationsInput | string | null
+    llmProcessed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12597,6 +12621,7 @@ export namespace Prisma {
     department?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: NullableStringFieldUpdateOperationsInput | string | null
     experience?: NullableStringFieldUpdateOperationsInput | string | null
+    llmProcessed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13284,6 +13309,7 @@ export namespace Prisma {
     department?: SortOrder
     skills?: SortOrder
     experience?: SortOrder
+    llmProcessed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13310,6 +13336,7 @@ export namespace Prisma {
     department?: SortOrder
     skills?: SortOrder
     experience?: SortOrder
+    llmProcessed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13336,6 +13363,7 @@ export namespace Prisma {
     department?: SortOrder
     skills?: SortOrder
     experience?: SortOrder
+    llmProcessed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13998,6 +14026,7 @@ export namespace Prisma {
     department?: string | null
     skills?: string | null
     experience?: string | null
+    llmProcessed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     jobSkills?: JobSkillCreateNestedManyWithoutJobInput
@@ -14024,6 +14053,7 @@ export namespace Prisma {
     department?: string | null
     skills?: string | null
     experience?: string | null
+    llmProcessed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     jobSkills?: JobSkillUncheckedCreateNestedManyWithoutJobInput
@@ -14108,6 +14138,7 @@ export namespace Prisma {
     department?: StringNullableFilter<"Job"> | string | null
     skills?: StringNullableFilter<"Job"> | string | null
     experience?: StringNullableFilter<"Job"> | string | null
+    llmProcessed?: BoolFilter<"Job"> | boolean
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
   }
@@ -14349,6 +14380,7 @@ export namespace Prisma {
     department?: string | null
     skills?: string | null
     experience?: string | null
+    llmProcessed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     company: CompanyCreateNestedOneWithoutJobsInput
@@ -14376,6 +14408,7 @@ export namespace Prisma {
     department?: string | null
     skills?: string | null
     experience?: string | null
+    llmProcessed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -14432,6 +14465,7 @@ export namespace Prisma {
     department?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: NullableStringFieldUpdateOperationsInput | string | null
     experience?: NullableStringFieldUpdateOperationsInput | string | null
+    llmProcessed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     company?: CompanyUpdateOneRequiredWithoutJobsNestedInput
@@ -14459,6 +14493,7 @@ export namespace Prisma {
     department?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: NullableStringFieldUpdateOperationsInput | string | null
     experience?: NullableStringFieldUpdateOperationsInput | string | null
+    llmProcessed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14617,6 +14652,7 @@ export namespace Prisma {
     department?: string | null
     skills?: string | null
     experience?: string | null
+    llmProcessed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -14652,6 +14688,7 @@ export namespace Prisma {
     department?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: NullableStringFieldUpdateOperationsInput | string | null
     experience?: NullableStringFieldUpdateOperationsInput | string | null
+    llmProcessed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobSkills?: JobSkillUpdateManyWithoutJobNestedInput
@@ -14678,6 +14715,7 @@ export namespace Prisma {
     department?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: NullableStringFieldUpdateOperationsInput | string | null
     experience?: NullableStringFieldUpdateOperationsInput | string | null
+    llmProcessed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobSkills?: JobSkillUncheckedUpdateManyWithoutJobNestedInput
@@ -14704,6 +14742,7 @@ export namespace Prisma {
     department?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: NullableStringFieldUpdateOperationsInput | string | null
     experience?: NullableStringFieldUpdateOperationsInput | string | null
+    llmProcessed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
